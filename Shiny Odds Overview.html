@@ -1,0 +1,340 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Shiny Odds Overview</title>
+<style>
+/* Windows Vista Explorer look: soft desktop, one glass-titled window, command bar, white content, fading section rules, list-view tables, green progress-bar data, amber for the top months. Single light theme on purpose. */
+:root{
+  color-scheme:light;
+  --desk:#dbe6f0; --win:#ffffff; --ink:#1b1b1b; --ink2:#4f4f4f; --muted:#7a7a7a; --grid:#e6e9ee; --line:#c4cdd9;
+  --head:#26496e; --s1:#2fa82f; --hi:#e8920c; --good:#2f8a2f; --warn:#b36200;
+  --body:'Segoe UI',Tahoma,'Helvetica Neue',Arial,sans-serif;
+}
+body{background:linear-gradient(#cfdeec,#e8f0f7 60%,#dbe6f0) fixed,var(--desk);color:var(--ink);font-family:var(--body);font-size:13px;line-height:1.5;padding-inline:14px;padding-block:22px 34px}
+.win{max-width:980px;margin:0 auto;background:var(--win);border:1px solid #5d7893;border-radius:7px 7px 2px 2px;box-shadow:0 0 0 1px rgba(255,255,255,.7) inset,0 8px 28px rgba(30,50,80,.35);overflow:hidden}
+.titlebar{background:linear-gradient(#dce9f6,#c5d9ee 48%,#b3cbe6 50%,#c4d9ef);border-bottom:1px solid #8aa4bf;padding:6px 12px;font-size:12px;color:#14263a;text-shadow:0 0 6px #fff,0 0 2px #fff}
+.cmd{display:flex;gap:2px;flex-wrap:wrap;padding:4px 8px;background:linear-gradient(#fafbfd,#e9eef5);border-bottom:1px solid #c4cdd9}
+.cmd a{color:#1c2f45;text-decoration:none;padding:3px 10px;border:1px solid transparent;border-radius:3px;font-size:12px}
+.cmd a:hover{background:linear-gradient(#f6fbff,#dcecfa);border-color:#aac8e6}
+.wrap{padding:20px 24px 24px;display:flex;flex-direction:column;gap:28px}
+header{padding-bottom:2px}
+h1{font-weight:normal;font-size:clamp(22px,4vw,28px);line-height:1.2;margin:0;color:var(--head);text-wrap:balance}
+h2{font-weight:normal;font-size:17px;margin:0;color:var(--head);text-wrap:balance}
+p{margin:0}
+.sub{color:var(--ink2);margin-top:2px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px 0;border-block:1px solid var(--line);padding-block:12px}
+.tile{padding:0 14px;min-width:0;border-left:1px solid var(--grid)}
+.tile:first-child{border-left:0;padding-left:0}
+.tile .k{font-size:11px;color:var(--muted)}
+.tile .v{font-size:22px;line-height:1.25;color:var(--ink)}
+.tile .n{font-size:11px;color:var(--ink2)}
+.card{display:flex;flex-direction:column;gap:12px;min-width:0}
+.card>h2,.head{border-bottom:1px solid;border-image:linear-gradient(90deg,#9fb2c8,rgba(159,178,200,0)) 1;padding-bottom:6px}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.head p{color:var(--ink2);font-size:12px;max-width:68ch;margin-top:3px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px}
+.seg{display:inline-flex}
+.seg button{font:12px var(--body);color:var(--ink);background:linear-gradient(#f2f2f2 45%,#dddddd 50%,#cfcfcf);border:1px solid #707070;padding:3px 12px;cursor:pointer}
+.seg button:first-child{border-radius:3px 0 0 3px}.seg button:last-child{border-radius:0 3px 3px 0;border-left:0}
+.seg button[aria-pressed="true"]{background:linear-gradient(#e4f4fc 45%,#bfe4f6 50%,#98d1ef);border-color:#2c628b}
+button:focus-visible,summary:focus-visible,a:focus-visible{outline:1px dotted #000;outline-offset:2px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{font-family:var(--body);fill:var(--ink2);font-size:11px}
+svg .lab{fill:var(--ink)}
+.gl{stroke:var(--grid);stroke-width:1}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink2)}
+.legend i{display:inline-block;width:11px;height:11px;border:1px solid rgba(0,0,0,.35);margin-right:6px;vertical-align:-1px}
+.callout{font-size:12px;color:var(--ink2)}
+.callout b{color:var(--ink);font-weight:600}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:12px;border:1px solid #d5dbe3}
+th,td{text-align:right;padding:4px 10px;white-space:nowrap}
+tbody tr:hover{background:linear-gradient(#f4faff,#e3f1fd);box-shadow:inset 0 0 0 1px #b8d6fb}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:normal;color:var(--ink);background:linear-gradient(#ffffff,#f1f3f7 55%,#e6e9ef);position:sticky;top:0;border-bottom:1px solid #d5dbe3;border-right:1px solid #e0e4ea}
+th button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+th button:hover{color:#0a5aa8}
+.pill{display:inline-block;border-radius:2px;padding:0 6px;font-size:11px;border:1px solid}
+.p-good{color:var(--good);background:#e8f6e6;border-color:#8fcb8a}.p-warn{color:var(--warn);background:#fff1dc;border-color:#e2b268}.p-mid{color:var(--muted);background:#f4f5f7;border-color:#d3d7de}
+.bar{display:inline-block;height:9px;border:1px solid #2f7d2f;background:linear-gradient(#8ee88e,#2fa82f 50%,#43c043);vertical-align:middle;margin-right:6px}
+#tip{position:fixed;pointer-events:none;background:linear-gradient(#fff,#e9edf2);color:#222;border:1px solid #767676;border-radius:3px;box-shadow:2px 2px 4px rgba(0,0,0,.25);font-size:12px;padding:4px 8px;opacity:0;z-index:9;max-width:240px}
+details summary{cursor:pointer;color:#0a5aa8;font-size:12px}
+.notes{padding-left:20px;margin:0}.notes li{margin-bottom:4px;color:var(--ink2)}
+.tableMax{max-height:520px;overflow:auto}
+footer{border-top:1px solid var(--line);padding-top:8px;font-size:11px;color:var(--muted)}
+</style>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+ <linearGradient id="gS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ee88e"/><stop offset=".5" stop-color="#2fa82f"/><stop offset="1" stop-color="#43c043"/></linearGradient>
+ <linearGradient id="gHi" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd98a"/><stop offset=".5" stop-color="#e8920c"/><stop offset="1" stop-color="#f2a93a"/></linearGradient>
+ <linearGradient id="gG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e4e8ee"/><stop offset=".5" stop-color="#a9b2be"/><stop offset="1" stop-color="#bcc4ce"/></linearGradient>
+</defs></svg>
+
+<div class="win">
+<div class="titlebar">Shiny Odds Overview – Shinyodds.ods</div>
+<nav class="cmd"><a href="#monthCard">Months</a><a href="#heatSec">Month by year</a><a href="#timeSec">Over time</a><a href="#luckSec">Luck check</a><a href="#specSec">Species</a><a href="#repSec">Repeats</a><a href="#noteSec">Notes</a></nav>
+<div class="wrap">
+  <header>
+    <h1>Shiny odds overview</h1>
+    <p class="sub" id="lede"></p>
+  </header>
+
+  <section class="tiles" id="tiles"></section>
+
+  <section class="card" id="monthCard">
+    <div class="head">
+      <div>
+        <h2>Which months gave the most shinies?</h2>
+        <p>Shinies caught per calendar month, across all years. Your sheet has no encounters per month, so this shows when shinies happened, not a true monthly probability. The per-year view corrects for months you have observed more often.</p>
+      </div>
+      <div class="seg" role="group" aria-label="Month measure">
+        <button id="mTot" aria-pressed="true">Total</button><button id="mAvg" aria-pressed="false">Per year observed</button>
+      </div>
+    </div>
+    <div id="monthChart"></div>
+    <div class="legend"><span><i style="background:linear-gradient(#ffd98a,#e8920c)"></i>Top 3 months</span><span><i style="background:linear-gradient(#8ee88e,#2fa82f)"></i>Other months</span></div>
+    <p class="callout" id="monthNote"></p>
+  </section>
+
+  <section class="grid2" id="heatSec">
+    <div class="card"><div class="head"><div><h2>Month by year</h2><p>Each cell is the number of shinies found. Darker means more.</p></div></div><div id="heat"></div></div>
+    <div class="card"><div class="head"><div><h2>Seasons and weekdays</h2><p>Shinies by quarter and by day of the week.</p></div></div><div id="qChart"></div><div id="wChart"></div></div>
+  </section>
+
+  <section class="card" id="timeSec">
+    <div class="head"><div><h2>Shinies over time</h2><p>Cumulative count with each year's total.</p></div></div>
+    <div id="cum"></div>
+    <p class="callout" id="yearNote"></p>
+  </section>
+
+  <section class="card" id="luckSec">
+    <div class="head"><div><h2>Luck check</h2><p>Encounters needed per shiny species, compared with what your own average rate (1 in <span id="avgN"></span>) would predict. Bars show how many species landed in each range.</p></div></div>
+    <div id="luck"></div>
+    <div class="legend"><span><i style="background:linear-gradient(#8ee88e,#2fa82f)"></i>Your species</span><span><i style="background:linear-gradient(#e4e8ee,#a9b2be)"></i>Expected at your average rate</span></div>
+    <p class="callout" id="luckNote"></p>
+  </section>
+
+  <section class="card" id="specSec">
+    <div class="head"><div><h2>Shiny rate by Pokémon</h2><p>Shinies divided by encounters. Click a column to sort. The luck column is the chance of getting at least this many shinies in that many encounters at your average rate; a low chance means you were lucky.</p></div></div>
+    <div class="scroll tableMax"><table id="spec"></table></div>
+  </section>
+
+  <section class="card" id="repSec">
+    <div class="head"><div><h2>Repeat shinies</h2><p>Species with more than one shiny and the days between them.</p></div></div>
+    <div class="scroll"><table id="rep"></table></div>
+  </section>
+
+  <section class="card" id="noteSec">
+    <h2>Notes on the data</h2>
+    <ul class="notes" id="notes"></ul>
+    <details><summary>Month table</summary><div class="scroll"><table id="mtab"></table></div></details>
+  </section>
+<footer>Shiny odds sheet · data as of Oct 9, 2026</footer>
+</div></div>
+<div id="tip" role="tooltip"></div>
+
+<script>
+const D = {"rows": [{"name": "Bulbasaur", "shiny": 1, "seen": 68, "dates": ["2025-01-10"], "rate": 0.014705882352941176}, {"name": "Charmander", "shiny": 1, "seen": 79, "dates": ["2024-01-26"], "rate": 0.012658227848101266}, {"name": "Caterpie", "shiny": 2, "seen": 135, "dates": ["2024-06-22", "2025-10-07"], "rate": 0.014814814814814815}, {"name": "Ekans", "shiny": 2, "seen": 158, "dates": ["2024-01-21", "2025-10-28"], "rate": 0.012658227848101266}, {"name": "Arbok", "shiny": 1, "seen": 56, "dates": ["2025-02-26"], "rate": 0.017857142857142856}, {"name": "Pikachu", "shiny": 2, "seen": 127, "dates": ["2026-07-16", "2026-07-24"], "rate": 0.015748031496062992}, {"name": "Pikachu X-Mas", "shiny": 1, "seen": null, "dates": ["2024-12-24"], "rate": null}, {"name": "Sandslash", "shiny": 1, "seen": 19, "dates": ["2026-05-10"], "rate": 0.05263157894736842}, {"name": "Ninetails", "shiny": 1, "seen": 24, "dates": ["2025-09-10"], "rate": 0.041666666666666664}, {"name": "Jigglypuff", "shiny": 2, "seen": 126, "dates": ["2024-02-15", "2026-09-08"], "rate": 0.015873015873015872}, {"name": "Wigglytuff", "shiny": 1, "seen": 25, "dates": ["2026-01-15"], "rate": 0.04}, {"name": "Diglett", "shiny": 1, "seen": 78, "dates": ["2025-01-15"], "rate": 0.01282051282051282}, {"name": "Meowth", "shiny": 1, "seen": 55, "dates": ["2024-09-15"], "rate": 0.01818181818181818}, {"name": "Psyduck", "shiny": 1, "seen": 88, "dates": ["2024-06-20"], "rate": 0.011363636363636364}, {"name": "Growlithe", "shiny": 1, "seen": 86, "dates": ["2025-06-05"], "rate": 0.011627906976744186}, {"name": "Geodude", "shiny": 1, "seen": 101, "dates": ["2024-08-08"], "rate": 0.009900990099009901}, {"name": "Graveler", "shiny": 3, "seen": 64, "dates": ["2024-10-07", "2025-12-21", "2026-06-25"], "rate": 0.046875}, {"name": "Slowpoke", "shiny": 1, "seen": 98, "dates": ["2026-01-18"], "rate": 0.01020408163265306}, {"name": "Doduo", "shiny": 1, "seen": 44, "dates": ["2025-01-08"], "rate": 0.022727272727272728}, {"name": "Gastly", "shiny": 1, "seen": 80, "dates": ["2025-06-19"], "rate": 0.0125}, {"name": "Onix", "shiny": 1, "seen": 6, "dates": ["2025-02-14"], "rate": 0.16666666666666666}, {"name": "Marowak", "shiny": 2, "seen": 43, "dates": ["2024-08-10", "2025-11-18"], "rate": 0.046511627906976744}, {"name": "Totodile", "shiny": 1, "seen": 47, "dates": ["2024-10-18"], "rate": 0.02127659574468085}, {"name": "Igglybuff", "shiny": 1, "seen": 111, "dates": ["2024-02-23"], "rate": 0.009009009009009009}, {"name": "Wooper", "shiny": 1, "seen": 69, "dates": ["2025-06-25"], "rate": 0.014492753623188406}, {"name": "Torchic", "shiny": 1, "seen": 46, "dates": ["2025-11-18"], "rate": 0.021739130434782608}, {"name": "Mudkip", "shiny": 1, "seen": 47, "dates": ["2025-07-22"], "rate": 0.02127659574468085}, {"name": "Ralts", "shiny": 1, "seen": 25, "dates": ["2024-09-22"], "rate": 0.04}, {"name": "Kirlia", "shiny": 1, "seen": 15, "dates": ["2026-01-25"], "rate": 0.06666666666666667}, {"name": "Gulpin", "shiny": 1, "seen": 93, "dates": ["2024-03-03"], "rate": 0.010752688172043012}, {"name": "Trapinch", "shiny": 2, "seen": 23, "dates": ["2026-03-15", "2026-05-10"], "rate": 0.08695652173913043}, {"name": "Shuppet", "shiny": 1, "seen": 53, "dates": ["2024-11-02"], "rate": 0.018867924528301886}, {"name": "Banette", "shiny": 1, "seen": 23, "dates": ["2025-06-19"], "rate": 0.043478260869565216}, {"name": "Spheal", "shiny": 2, "seen": 67, "dates": ["2024-10-03", "2025-10-31"], "rate": 0.029850746268656716}, {"name": "Piplup", "shiny": 1, "seen": 38, "dates": ["2026-07-20"], "rate": 0.02631578947368421}, {"name": "Honchkrow", "shiny": 1, "seen": 5, "dates": ["2025-11-21"], "rate": 0.2}, {"name": "Riolu", "shiny": 2, "seen": 82, "dates": ["2024-05-08", "2026-06-25"], "rate": 0.024390243902439025}, {"name": "Magneton", "shiny": 1, "seen": 28, "dates": ["2024-05-24"], "rate": 0.03571428571428571}, {"name": "Pumpkaboo M", "shiny": 1, "seen": 36, "dates": ["2025-10-22"], "rate": 0.027777777777777776}, {"name": "Noibat", "shiny": 1, "seen": 30, "dates": ["2026-05-29"], "rate": 0.03333333333333333}, {"name": "Ribombee", "shiny": 1, "seen": 15, "dates": ["2026-02-15"], "rate": 0.06666666666666667}, {"name": "Sprigatito", "shiny": 1, "seen": 41, "dates": ["2025-01-26"], "rate": 0.024390243902439025}, {"name": "Quaxwell", "shiny": 1, "seen": 45, "dates": ["2025-08-22"], "rate": 0.022222222222222223}], "events": [{"name": "Bulbasaur", "date": "2025-01-10", "seen": 68, "n": 1}, {"name": "Charmander", "date": "2024-01-26", "seen": 79, "n": 1}, {"name": "Caterpie", "date": "2025-10-07", "seen": 135, "n": 2}, {"name": "Caterpie", "date": "2024-06-22", "seen": 135, "n": 2}, {"name": "Ekans", "date": "2025-10-28", "seen": 158, "n": 2}, {"name": "Ekans", "date": "2024-01-21", "seen": 158, "n": 2}, {"name": "Arbok", "date": "2025-02-26", "seen": 56, "n": 1}, {"name": "Pikachu", "date": "2026-07-16", "seen": 127, "n": 2}, {"name": "Pikachu", "date": "2026-07-24", "seen": 127, "n": 2}, {"name": "Pikachu X-Mas", "date": "2024-12-24", "seen": null, "n": 1}, {"name": "Sandslash", "date": "2026-05-10", "seen": 19, "n": 1}, {"name": "Ninetails", "date": "2025-09-10", "seen": 24, "n": 1}, {"name": "Jigglypuff", "date": "2026-09-08", "seen": 126, "n": 2}, {"name": "Jigglypuff", "date": "2024-02-15", "seen": 126, "n": 2}, {"name": "Wigglytuff", "date": "2026-01-15", "seen": 25, "n": 1}, {"name": "Diglett", "date": "2025-01-15", "seen": 78, "n": 1}, {"name": "Meowth", "date": "2024-09-15", "seen": 55, "n": 1}, {"name": "Psyduck", "date": "2024-06-20", "seen": 88, "n": 1}, {"name": "Growlithe", "date": "2025-06-05", "seen": 86, "n": 1}, {"name": "Geodude", "date": "2024-08-08", "seen": 101, "n": 1}, {"name": "Graveler", "date": "2024-10-07", "seen": 64, "n": 3}, {"name": "Graveler", "date": "2025-12-21", "seen": 64, "n": 3}, {"name": "Graveler", "date": "2026-06-25", "seen": 64, "n": 3}, {"name": "Slowpoke", "date": "2026-01-18", "seen": 98, "n": 1}, {"name": "Doduo", "date": "2025-01-08", "seen": 44, "n": 1}, {"name": "Gastly", "date": "2025-06-19", "seen": 80, "n": 1}, {"name": "Onix", "date": "2025-02-14", "seen": 6, "n": 1}, {"name": "Marowak", "date": "2025-11-18", "seen": 43, "n": 2}, {"name": "Marowak", "date": "2024-08-10", "seen": 43, "n": 2}, {"name": "Totodile", "date": "2024-10-18", "seen": 47, "n": 1}, {"name": "Igglybuff", "date": "2024-02-23", "seen": 111, "n": 1}, {"name": "Wooper", "date": "2025-06-25", "seen": 69, "n": 1}, {"name": "Torchic", "date": "2025-11-18", "seen": 46, "n": 1}, {"name": "Mudkip", "date": "2025-07-22", "seen": 47, "n": 1}, {"name": "Ralts", "date": "2024-09-22", "seen": 25, "n": 1}, {"name": "Kirlia", "date": "2026-01-25", "seen": 15, "n": 1}, {"name": "Gulpin", "date": "2024-03-03", "seen": 93, "n": 1}, {"name": "Trapinch", "date": "2026-03-15", "seen": 23, "n": 2}, {"name": "Trapinch", "date": "2026-05-10", "seen": 23, "n": 2}, {"name": "Shuppet", "date": "2024-11-02", "seen": 53, "n": 1}, {"name": "Banette", "date": "2025-06-19", "seen": 23, "n": 1}, {"name": "Spheal", "date": "2025-10-31", "seen": 67, "n": 2}, {"name": "Spheal", "date": "2024-10-03", "seen": 67, "n": 2}, {"name": "Piplup", "date": "2026-07-20", "seen": 38, "n": 1}, {"name": "Honchkrow", "date": "2025-11-21", "seen": 5, "n": 1}, {"name": "Riolu", "date": "2024-05-08", "seen": 82, "n": 2}, {"name": "Riolu", "date": "2026-06-25", "seen": 82, "n": 2}, {"name": "Magneton", "date": "2024-05-24", "seen": 28, "n": 1}, {"name": "Pumpkaboo M", "date": "2025-10-22", "seen": 36, "n": 1}, {"name": "Noibat", "date": "2026-05-29", "seen": 30, "n": 1}, {"name": "Ribombee", "date": "2026-02-15", "seen": 15, "n": 1}, {"name": "Sprigatito", "date": "2025-01-26", "seen": 41, "n": 1}, {"name": "Quaxwell", "date": "2025-08-22", "seen": 45, "n": 1}]};
+const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MF=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const WD=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const $=id=>document.getElementById(id);
+const fmt=(n,d=0)=>n.toLocaleString('en',{minimumFractionDigits:d,maximumFractionDigits:d});
+const ev=D.events.map(e=>{const d=new Date(e.date+'T00:00:00Z');return {...e,d,m:d.getUTCMonth(),y:d.getUTCFullYear(),wd:(d.getUTCDay()+6)%7}});
+const rows=D.rows;
+const known=rows.filter(r=>r.seen);
+const totS=known.reduce((a,r)=>a+r.shiny,0), totSeen=known.reduce((a,r)=>a+r.seen,0), p=totS/totSeen;
+const years=[...new Set(ev.map(e=>e.y))].sort();
+const START=Date.UTC(2024,0,1), END=Date.UTC(2026,9,9);
+// exposure: fraction of each calendar month covered by the observation window, summed over years
+const expo=Array(12).fill(0);
+for(let y=2024;y<=2026;y++)for(let m=0;m<12;m++){
+  const a=Date.UTC(y,m,1),b=Date.UTC(y,m+1,1);
+  const o=Math.max(0,Math.min(b,END+864e5)-Math.max(a,START));expo[m]+=o/(b-a);}
+const mc=Array(12).fill(0);ev.forEach(e=>mc[e.m]++);
+const avg=mc.map((c,i)=>c/expo[i]);
+const tip=$('tip');
+function showTip(t,e){tip.innerHTML=t;tip.style.opacity=1;const w=tip.offsetWidth;let x=e.clientX+12;if(x+w>innerWidth-8)x=e.clientX-w-12;tip.style.left=x+'px';tip.style.top=(e.clientY+12)+'px'}
+function hideTip(){tip.style.opacity=0}
+function hover(el,t){el.addEventListener('mousemove',e=>showTip(t,e));el.addEventListener('mouseleave',hideTip);el.addEventListener('focus',()=>{const r=el.getBoundingClientRect();showTip(t,{clientX:r.left+r.width/2,clientY:r.top})});el.addEventListener('blur',hideTip)}
+const NS='http://www.w3.org/2000/svg';
+function S(tag,attrs={},txt){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(txt!=null)e.textContent=txt;return e}
+function roundTop(x,y,w,h,r){r=Math.min(r,h,w/2,2);return `M${x},${y+h}V${y+r}Q${x},${y} ${x+r},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h}Z`}
+
+/* ---- tiles ---- */
+const best=mc.indexOf(Math.max(...mc));
+const yc={};ev.forEach(e=>yc[e.y]=(yc[e.y]||0)+1);
+const bestY=Object.entries(yc).sort((a,b)=>b[1]-a[1])[0];
+const first=ev.map(e=>e.d).sort((a,b)=>a-b)[0], last=ev.map(e=>e.d).sort((a,b)=>b-a)[0];
+$('lede').textContent=`${ev.length} shinies across ${rows.length} species, caught between ${first.toLocaleDateString('en',{month:'short',year:'numeric',timeZone:'UTC'})} and ${last.toLocaleDateString('en',{month:'short',year:'numeric',timeZone:'UTC'})}.`;
+const tiles=[
+ ['Shinies',ev.length,`${rows.length} species`],
+ ['Encounters',fmt(totSeen),'across species with a known count'],
+ ['Average rate',`1 in ${fmt(1/p,1)}`,`${fmt(p*100,2)}% per encounter`],
+ ['Best month',MF[best],`${mc[best]} shinies in total`],
+ ['Best year',bestY[0],`${bestY[1]} shinies`],
+ ['Luckiest find','Honchkrow','1 shiny in 5 encounters']];
+$('tiles').innerHTML=tiles.map(t=>`<div class="tile"><div class="k">${t[0]}</div><div class="v">${t[1]}</div><div class="n">${t[2]}</div></div>`).join('');
+$('avgN').textContent=fmt(1/p,0);
+
+/* ---- month chart ---- */
+let mode='tot';
+function drawMonths(){
+  const vals=mode==='tot'?mc:avg;
+  const W=720,H=300,L=34,B=28,T=14,R=8,iw=W-L-R,ih=H-T-B;
+  const max=Math.max(...vals), top=mode==='tot'?Math.ceil(max/2)*2:Math.ceil(max*2)/2;
+  const rank=[...vals].map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]).slice(0,3).map(x=>x[1]);
+  const svg=S('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'Shinies by calendar month'});
+  const ticks=mode==='tot'?[0,2,4,6,8,10].filter(t=>t<=top):Array.from({length:Math.floor(top/0.5)+1},(_,i)=>i*0.5).filter(t=>t%1===0||top<=3);
+  ticks.forEach(t=>{const y=T+ih-t/top*ih;svg.append(S('line',{x1:L,x2:W-R,y1:y,y2:y,class:'gl'}),S('text',{x:L-6,y:y+4,'text-anchor':'end'},t))});
+  const bw=iw/12;
+  vals.forEach((v,i)=>{
+    const h=v/top*ih,x=L+i*bw+bw*.16,w=bw*.68,y=T+ih-h;
+    const hit=S('rect',{x:L+i*bw,y:T,width:bw,height:ih,fill:'transparent',tabindex:0});
+    if(v>0)svg.append(S('path',{d:roundTop(x,y,w,h,4),fill:rank.includes(i)?'url(#gHi)':'url(#gS)'}));
+    svg.append(S('text',{x:x+w/2,y:y-5,'text-anchor':'middle',class:'lab'},mode==='tot'?v:fmt(v,1)));
+    svg.append(S('text',{x:x+w/2,y:H-9,'text-anchor':'middle'},MN[i]));
+    hover(hit,`<b>${MF[i]}</b><br>${mc[i]} shinies in ${fmt(expo[i],2)} observed years<br>${fmt(avg[i],2)} per year`);
+    svg.append(hit);
+  });
+  $('monthChart').replaceChildren(svg);
+  const t3=[...mc.map((v,i)=>[v,i])].sort((a,b)=>b[0]-a[0]).slice(0,3).map(x=>`${MF[x[1]]} (${x[0]})`).join(', ');
+  const t3a=[...avg.map((v,i)=>[v,i])].sort((a,b)=>b[0]-a[0]).slice(0,3).map(x=>`${MF[x[1]]} (${fmt(x[0],1)})`).join(', ');
+  const zero=MF.filter((m,i)=>mc[i]===0);
+  $('monthNote').innerHTML=`<b>Totals:</b> ${t3}. <b>Per year observed:</b> ${t3a}.${zero.length?` <b>${zero.join(', ')}</b> ${zero.length>1?'have':'has'} no shinies yet.`:''} With ${ev.length} shinies, a month with 2 or 3 more than another is within normal random spread, so treat this as a pattern to watch, not a rule.`;
+}
+$('mTot').onclick=()=>{mode='tot';$('mTot').setAttribute('aria-pressed',true);$('mAvg').setAttribute('aria-pressed',false);drawMonths()};
+$('mAvg').onclick=()=>{mode='avg';$('mAvg').setAttribute('aria-pressed',true);$('mTot').setAttribute('aria-pressed',false);drawMonths()};
+drawMonths();
+
+/* ---- heatmap ---- */
+(function(){
+  const cw=60,ch=26,L=40,T=22,W=L+cw*years.length+60,H=T+ch*12;
+  const svg=S('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'Shinies by month and year'});
+  const g={};ev.forEach(e=>{const k=e.y+'-'+e.m;g[k]=(g[k]||0)+1});
+  const mx=Math.max(...Object.values(g));
+  years.forEach((y,i)=>svg.append(S('text',{x:L+i*cw+cw/2,y:12,'text-anchor':'middle'},y)));
+  svg.append(S('text',{x:L+years.length*cw+30,y:12,'text-anchor':'middle'},'Total'));
+  for(let m=0;m<12;m++){
+    svg.append(S('text',{x:L-8,y:T+m*ch+ch/2+4,'text-anchor':'end'},MN[m]));
+    years.forEach((y,i)=>{
+      const v=g[y+'-'+m]||0;
+      // months not yet reached in the last year are shown as empty outline
+      const future=Date.UTC(y,m,1)>END;
+      const r=S('rect',{x:L+i*cw+1,y:T+m*ch+1,width:cw-2,height:ch-2,rx:2,tabindex:0,
+        fill:future?'none':`color-mix(in srgb, var(--s1) ${v?14+v/mx*66:0}%, #ffffff)`,
+        stroke:future?'var(--grid)':(v?'none':'var(--grid)'),'stroke-dasharray':future?'3 3':'none'});
+      svg.append(r);
+      if(v)svg.append(S('text',{x:L+i*cw+cw/2,y:T+m*ch+ch/2+4,'text-anchor':'middle',style:`fill:var(--ink);font-weight:600`},v));
+      hover(r,`<b>${MN[m]} ${y}</b><br>${future?'Not reached yet':v+' shinies'}`);
+    });
+    svg.append(S('text',{x:L+years.length*cw+30,y:T+m*ch+ch/2+4,'text-anchor':'middle',class:'lab'},mc[m]));
+  }
+  $('heat').replaceChildren(svg);
+})();
+
+/* ---- small bar charts ---- */
+function smallBars(el,labels,vals,title,hiIdx){
+  const W=420,H=130,L=26,B=22,T=14,iw=W-L-6,ih=H-T-B,top=Math.max(...vals)+1,bw=iw/vals.length;
+  const svg=S('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':title});
+  svg.append(S('text',{x:0,y:8,class:'lab',style:'font-weight:600'},title));
+  svg.append(S('line',{x1:L,x2:W-6,y1:T+ih,y2:T+ih,class:'gl'}));
+  vals.forEach((v,i)=>{const h=v/top*ih,x=L+i*bw+bw*.18,w=bw*.64,y=T+ih-h;
+    const b=S('path',{d:roundTop(x,y,w,Math.max(h,0.01),4),fill:i===hiIdx?'url(#gHi)':'url(#gS)',tabindex:0});
+    svg.append(b,S('text',{x:x+w/2,y:y-4,'text-anchor':'middle',class:'lab'},v),S('text',{x:x+w/2,y:H-6,'text-anchor':'middle'},labels[i]));
+    hover(b,`<b>${labels[i]}</b><br>${v} shinies`)});
+  el.replaceChildren(svg);
+}
+const qv=[0,1,2,3].map(q=>ev.filter(e=>Math.floor(e.m/3)===q).length);
+const wv=WD.map((_,i)=>ev.filter(e=>e.wd===i).length);
+smallBars($('qChart'),['Jan–Mar','Apr–Jun','Jul–Sep','Oct–Dec'],qv,'By quarter',qv.indexOf(Math.max(...qv)));
+smallBars($('wChart'),WD,wv,'By weekday',wv.indexOf(Math.max(...wv)));
+
+/* ---- cumulative ---- */
+(function(){
+  const W=720,H=240,L=34,B=26,T=12,R=12,iw=W-L-R,ih=H-T-B;
+  const t0=START,t1=END,xs=t=>L+(t-t0)/(t1-t0)*iw;
+  const top=Math.ceil(ev.length/10)*10,ys=v=>T+ih-v/top*ih;
+  const svg=S('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'Cumulative shinies'});
+  for(let t=0;t<=top;t+=10){svg.append(S('line',{x1:L,x2:W-R,y1:ys(t),y2:ys(t),class:'gl'}),S('text',{x:L-6,y:ys(t)+4,'text-anchor':'end'},t))}
+  const sorted=[...ev].sort((a,b)=>a.d-b.d);
+  let d=`M${xs(t0)},${ys(0)}`,c=0;
+  sorted.forEach(e=>{c++;d+=`H${xs(e.d)}V${ys(c)}`});d+=`H${xs(t1)}`;
+  svg.append(S('path',{d:d+`V${ys(0)}Z`,fill:'var(--s1)',opacity:.15}),S('path',{d,fill:'none',stroke:'var(--s1)','stroke-width':2,'stroke-linejoin':'round'}));
+  years.forEach((y,i)=>{const a=Math.max(t0,Date.UTC(y,0,1)),b=Math.min(t1,Date.UTC(y+1,0,1));
+    if(i>0)svg.append(S('line',{x1:xs(a),x2:xs(a),y1:T,y2:T+ih,class:'gl','stroke-dasharray':'3 3'}));
+    svg.append(S('text',{x:(xs(a)+xs(b))/2,y:H-8,'text-anchor':'middle'},`${y}${y===2026?' (to Oct 9)':''}`),
+      S('text',{x:(xs(a)+xs(b))/2,y:T+12,'text-anchor':'middle',class:'lab',style:'font-weight:600'},`${yc[y]} shinies`))});
+  const lx=xs(t1),ly=ys(ev.length);
+  svg.append(S('circle',{cx:lx,cy:ly,r:4,fill:'var(--hi)',stroke:'#ffffff','stroke-width':2}),S('text',{x:lx-8,y:ly-8,'text-anchor':'end',class:'lab'},ev.length));
+  const hit=S('rect',{x:L,y:T,width:iw,height:ih,fill:'transparent'});
+  hit.addEventListener('mousemove',e=>{const r=hit.getBoundingClientRect();const t=t0+(e.clientX-r.left)/r.width*(t1-t0);
+    const n=sorted.filter(s=>s.d<=t).length;const dt=new Date(t).toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'});showTip(`<b>${dt}</b><br>${n} shinies so far`,e)});
+  hit.addEventListener('mouseleave',hideTip);svg.append(hit);
+  $('cum').replaceChildren(svg);
+  const per=years.map(y=>y===2026?`${yc[y]} so far in 2026 (${fmt(yc[y]/((END-Date.UTC(2026,0,1))/864e5)*365,0)} at the current pace)`:`${yc[y]} in ${y}`).join(', ');
+  $('yearNote').innerHTML=`<b>Per year:</b> ${per}. Roughly <b>${fmt(ev.length/((END-START)/864e5)*30.4,1)}</b> shinies per month overall.`;
+})();
+
+/* ---- luck: binomial tail ---- */
+const lg=(()=>{const c=[0];for(let i=1;i<=3000;i++)c[i]=c[i-1]+Math.log(i);return n=>c[n]})();
+function tail(k,n){ // P(X>=k)
+  let s=0;for(let i=0;i<k;i++)s+=Math.exp(lg(n)-lg(i)-lg(n-i)+i*Math.log(p)+(n-i)*Math.log(1-p));return Math.max(0,1-s)}
+rows.forEach(r=>{if(r.seen){r.tail=tail(r.shiny,r.seen);r.perN=r.seen/r.shiny}});
+(function(){
+  const bins=[[0,25],[26,50],[51,75],[76,100],[101,9999]],lab=['1–25','26–50','51–75','76–100','101+'];
+  const one=known.filter(r=>r.shiny===1);
+  const obs=bins.map(([a,b])=>one.filter(r=>r.seen>=a&&r.seen<=b).length);
+  const q=1-p,cdf=n=>1-Math.pow(q,n);
+  const exp=bins.map(([a,b])=>one.length*(cdf(Math.min(b,9999))-cdf(Math.max(a-1,0))));
+  const W=720,H=230,L=34,B=36,T=14,iw=W-L-6,ih=H-T-B,top=Math.ceil(Math.max(...obs,...exp)/5)*5,bw=iw/bins.length;
+  const svg=S('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'Encounters per shiny, observed against expected'});
+  for(let t=0;t<=top;t+=5)svg.append(S('line',{x1:L,x2:W-6,y1:T+ih-t/top*ih,y2:T+ih-t/top*ih,class:'gl'}),S('text',{x:L-6,y:T+ih-t/top*ih+4,'text-anchor':'end'},t));
+  bins.forEach((b,i)=>{
+    const x=L+i*bw,w=bw*.3;
+    [[obs[i],'url(#gS)',x+bw*.18,'Your species'],[exp[i],'url(#gG)',x+bw*.18+w+4,'Expected']].forEach(([v,c,xx,nm])=>{
+      const h=v/top*ih,y=T+ih-h;const el=S('path',{d:roundTop(xx,y,w,Math.max(h,.01),4),fill:c,tabindex:0});
+      svg.append(el,S('text',{x:xx+w/2,y:y-5,'text-anchor':'middle',class:'lab'},nm==='Expected'?fmt(v,1):v));
+      hover(el,`<b>${lab[i]} encounters</b><br>${nm}: ${nm==='Expected'?fmt(v,1):v} species`)});
+    svg.append(S('text',{x:x+bw/2,y:H-16,'text-anchor':'middle'},lab[i]))});
+  svg.append(S('text',{x:L+iw/2,y:H-2,'text-anchor':'middle'},'Encounters until the shiny (species with exactly one shiny)'));
+  $('luck').replaceChildren(svg);
+  const med=[...one.map(r=>r.seen)].sort((a,b)=>a-b);const m=med[Math.floor(med.length/2)];
+  const lucky=[...known].sort((a,b)=>a.tail-b.tail).slice(0,3).map(r=>r.name).join(', ');
+  const unl=[...known].sort((a,b)=>b.tail-a.tail).slice(0,3).map(r=>r.name).join(', ');
+  $('luckNote').innerHTML=`<b>${one.length}</b> species have exactly one shiny. Their median was <b>${m}</b> encounters; at 1 in ${fmt(1/p,0)} the expected median is about <b>${fmt(Math.log(.5)/Math.log(q),0)}</b>. Luckiest relative to your average: <b>${lucky}</b>. Longest waits: <b>${unl}</b>.`;
+})();
+
+/* ---- species table ---- */
+let sortKey='rate',dir=-1;
+function luckPill(r){if(!r.seen)return '<span class="pill p-mid">unknown</span>';
+  if(r.tail<=.15)return `<span class="pill p-good">lucky · ${fmt(r.tail*100,0)}%</span>`;
+  if(r.tail>=.85)return `<span class="pill p-warn">long wait · ${fmt(r.tail*100,0)}%</span>`;
+  return `<span class="pill p-mid">typical · ${fmt(r.tail*100,0)}%</span>`}
+function drawSpec(){
+  const cols=[['name','Pokémon'],['shiny','Shinies'],['seen','Seen'],['rate','Rate'],['perN','1 in N'],['tail','Luck']];
+  const val=(r,k)=>k==='name'?r.name:(r[k]==null?(dir<0?-Infinity:Infinity):r[k]);
+  const list=[...rows].sort((a,b)=>{const x=val(a,sortKey),y=val(b,sortKey);return (x>y?1:x<y?-1:0)*dir});
+  const mxr=Math.max(...known.map(r=>r.rate));
+  $('spec').innerHTML=`<thead><tr>${cols.map(c=>`<th><button data-k="${c[0]}">${c[1]}${sortKey===c[0]?(dir>0?' ↑':' ↓'):''}</button></th>`).join('')}<th>Dates</th></tr></thead><tbody>`+
+   list.map(r=>`<tr><td>${r.name}</td><td>${r.shiny}</td><td>${r.seen??'?'}</td><td>${r.rate!=null?`<span class="bar" style="width:${r.rate/mxr*60}px"></span>${fmt(r.rate*100,1)}%`:'–'}</td><td>${r.perN!=null?fmt(r.perN,1):'–'}</td><td>${luckPill(r)}</td><td>${r.dates.join(', ')}</td></tr>`).join('')+'</tbody>';
+  $('spec').querySelectorAll('th button').forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(k===sortKey)dir=-dir;else{sortKey=k;dir=k==='name'||k==='perN'||k==='tail'?1:-1}drawSpec()});
+}
+drawSpec();
+
+/* ---- repeats ---- */
+(function(){
+  const rep=rows.filter(r=>r.shiny>1).sort((a,b)=>b.shiny-a.shiny||a.name.localeCompare(b.name));
+  const days=(a,b)=>Math.round((new Date(b)-new Date(a))/864e5);
+  $('rep').innerHTML='<thead><tr><th>Pokémon</th><th>Shinies</th><th>Encounters</th><th>Dates</th><th>Days between</th></tr></thead><tbody>'+
+   rep.map(r=>{const g=r.dates.slice(1).map((d,i)=>days(r.dates[i],d));return `<tr><td>${r.name}</td><td>${r.shiny}</td><td>${r.seen}</td><td>${r.dates.join(' → ')}</td><td>${g.join(', ')}</td></tr>`}).join('')+'</tbody>';
+})();
+
+/* ---- notes + month table ---- */
+$('notes').innerHTML=[
+ `<b>Seen</b> is read as total encounters for that species and <b>shinies ÷ seen</b> as its rate. Pikachu X-Mas has “3?” as its count, so it is left out of every rate and of the ${fmt(totSeen)}-encounter total (${known.length} species, ${totS} shinies).`,
+ `Only species that already produced a shiny are listed. Species you met many times without a shiny are missing, so every rate here, and the 1 in ${fmt(1/p,0)} average, is higher than your true odds.`,
+ `Months are from the shiny dates. The observation window runs from Jan 2024 to Oct 9, 2026, so Jan–Sep are covered three times, Oct about 2.3 times, Nov–Dec twice.`,
+ `Dates are taken as the day each shiny was caught.`].map(t=>`<li>${t}</li>`).join('');
+$('mtab').innerHTML='<thead><tr><th>Month</th><th>Shinies</th><th>Years observed</th><th>Per year</th>'+years.map(y=>`<th>${y}</th>`).join('')+'</tr></thead><tbody>'+
+ MF.map((m,i)=>`<tr><td>${m}</td><td>${mc[i]}</td><td>${fmt(expo[i],2)}</td><td>${fmt(avg[i],2)}</td>${years.map(y=>`<td>${ev.filter(e=>e.m===i&&e.y===y).length}</td>`).join('')}</tr>`).join('')+'</tbody>';
+</script>
+
+</body></html>
